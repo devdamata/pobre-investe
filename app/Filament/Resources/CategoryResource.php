@@ -7,11 +7,14 @@ use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -24,14 +27,25 @@ class CategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome')
                     ->required()
+                    ->lazy()
+                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                        if (($get('slug') ?? '') !== Str::slug($old)) {
+                            return;
+                        }
+                        $set('slug', Str::slug($state));
+                    })
                     ->maxLength(255),
                 Forms\Components\TextInput::make('slug')
                     ->required()
+                    ->readOnly()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                    ->label('Descrição')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('user_id')
+                    ->label('Autor')
                     ->relationship('user', 'name')
                     ->required(),
             ]);

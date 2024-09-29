@@ -7,6 +7,8 @@
     <meta name="author" content="David Grzyb">
     <meta name="description" content="">
 
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/x-icon">
+
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
